@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
-import Table from 'react-bootstrap/Table';
+import BootstrapTable from 'react-bootstrap-table-next';
+import cellEditFactory from 'react-bootstrap-table2-editor';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css'
+
 
 class MyTable extends Component {
 
@@ -8,14 +11,44 @@ class MyTable extends Component {
         super (props);
 
         this.state = {
-            data: []
+            data: [],
+            columns: [{
+                dataField: 'id',
+                text: 'Product ID',
+                sort: true
+            }, {
+                dataField: 'PartName',
+                text: 'Part Name',
+                sort: true
+            }, {
+                dataField: 'Date',
+                text: 'Date',
+                sort: true
+            }, {
+                dataField: 'Status',
+                text: 'Status',
+                sort: true
+            }, {
+                dataField: 'Link',
+                text: 'Link'
+            }]
+        };
+    }
+
+    componentDidUpdate(prevProps, nextProps) {
+        if (prevProps !== this.props) {
+            console.log (this.state);
+            this.getDataFromAPI ()
+                .then (res => this.setState ({data: res.data}))
+                .catch (err => console.log (err));
         }
     }
 
     componentDidMount() {
-        this.getDataFromAPI()
-            .then(res => this.setState({ data: res.data }))
-            .catch(err => console.log(err));
+        this.getDataFromAPI ()
+            .then (res => this.setState ({data: res.data}))
+            .catch (err => console.log (err));
+
     }
 
     async getDataFromAPI() {
@@ -27,36 +60,13 @@ class MyTable extends Component {
         return body;
     }
 
-    renderData(data, index) {
-        return (
-            <tr key={index}>
-                <td>{data.ID}</td>
-                <td>{data.PartName}</td>
-                <td>{data.Date}</td>
-                <td>{data.Status}</td>
-                <td>{data.Link}</td>
-            </tr>
-        )
-    }
-
     render() {
         return (
-            <div>
-                <Table striped bordered hover>
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Part Name</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                        <th>Link</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        {this.state.data.map(this.renderData)}
-                    </tbody>
-                </Table>
-            </div>
+            <BootstrapTable
+                keyField='id'
+                data={this.state.data}
+                columns={this.state.columns}
+                cellEdit={cellEditFactory ({mode: 'click'})}/>
         );
     }
 }
