@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
 import BootstrapTable from 'react-bootstrap-table-next';
 import cellEditFactory from 'react-bootstrap-table2-editor';
+import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css'
 
+const { SearchBar } = Search;
 
 class MyTable extends Component {
 
@@ -31,7 +33,12 @@ class MyTable extends Component {
             }, {
                 dataField: 'Link',
                 text: 'Link'
-            }]
+            }],
+            selectRow: {
+                mode: 'checkbox',
+                clickToSelect: true,
+                clickToEdit: true
+            }
         };
     }
 
@@ -62,11 +69,32 @@ class MyTable extends Component {
 
     render() {
         return (
-            <BootstrapTable
-                keyField='id'
-                data={this.state.data}
-                columns={this.state.columns}
-                cellEdit={cellEditFactory ({mode: 'click'})}/>
+            <div>
+                <ToolkitProvider
+                    keyField="id"
+                    data={ this.state.data }
+                    columns={ this.state.columns }
+                    search
+                >
+                    {
+                        props => (
+                            <div>
+                                <h3>Input something at below input field:</h3>
+                                <SearchBar { ...props.searchProps } />
+                                <hr />
+                                <BootstrapTable
+                                    {...props.baseProps }
+                                    keyField='id'
+                                    data={this.state.data}
+                                    columns={this.state.columns}
+                                    selectRow={ this.state.selectRow }
+                                    cellEdit={cellEditFactory ({mode: 'dbclick'})}
+                                />
+                            </div>
+                        )
+                    }
+                </ToolkitProvider>
+            </div>
         );
     }
 }

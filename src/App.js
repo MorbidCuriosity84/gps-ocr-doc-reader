@@ -4,6 +4,7 @@ import MyForm from "./Components/MyForm";
 import Header from "./Components/Header";
 import MyNavbar from "./Components/MyNavbar";
 import MyTable from "./Components/MyTable";
+import MyFileInput from "./Components/MyFileInput";
 
 class App extends Component {
   constructor(props) {
@@ -35,10 +36,10 @@ class App extends Component {
     return body;
   };
 
-  changeState(state) {
+  changeState(updateState) {
     this.setState({
-      data: state.data,
-      upload: state.upload
+      data: updateState.data,
+      upload: updateState.upload
     })
   }
 
@@ -52,6 +53,7 @@ class App extends Component {
             <MyNavbar changeState = {this.changeState}/>
           </div>
           <p className="App-intro">{this.state.data}</p>
+          <MyFileInput />
           {this.state.upload ? <MyForm/> : <MyTable/> }
         </div>
     );
